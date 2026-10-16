@@ -1,0 +1,75 @@
+# Založí GitHub release pro verzi z extension/manifest.json, pokud ještě neexistuje:
+# sestaví balíček pro Chrome Web Store a přidá poznámky z CHANGELOG.md.
+# Spouští se po nahrání značky vX.Y.Z nebo po pushi do master, který mění verzi
+# v manifestu (značku pak release založí sám). Pracovní větve release nezakládají.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+    branches: [master, main]
+    paths:
+      - extension/manifest.json
+      - .github/workflows/release.yml
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Kontrola verze
+        id: version
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ver=$(node -p "require('./extension/manifest.json').version")
+          if [ "$GITHUB_REF_TYPE" = "tag" ] && [ "${GITHUB_REF_NAME#v}" != "$ver" ]; then
+            echo "::error::Značka $GITHUB_REF_NAME neodpovídá verzi v manifest.json ($ver)"
+            exit 1
+          fi
+          echo "VERSION=$ver" >> "$GITHUB_ENV"
+          if gh release view "v$ver" >/dev/null 2>&1; then
+            echo "Release v$ver už existuje – nic nedělám."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Sestavení balíčku
+        if: steps.version.outputs.skip != 'true'
+        run: |
+          npm ci
+          npm test
+          npm run zip
+
+      - name: Poznámky z CHANGELOGu
+        if: steps.version.outputs.skip != 'true'
+        run: |
+          awk -v ver="$VERSION" '
+            index($0, "## [" ver "]") == 1 { found = 1; next }
+            found && /^## \[/ { exit }
+            found && /^\[[0-9.]+\]: / { exit }
+            found { print }
+          ' CHANGELOG.md > notes.md
+          if [ ! -s notes.md ]; then
+            echo "::error::V CHANGELOG.md chybí oddíl pro verzi $VERSION"
+            exit 1
+          fi
+          printf '\n---\n\n**Instalace:** stáhněte `paragrafy-%s.zip`, rozbalte ho a v `chrome://extensions` (Režim pro vývojáře) zvolte **Načíst rozbalené**. Do Chrome Web Store se nahrává přímo tento ZIP.\n' "$VERSION" >> notes.md
+
+      - name: Vytvoření release
+        if: steps.version.outputs.skip != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v$VERSION" "release/paragrafy-$VERSION.zip" \
+            --title "Paragrafy $VERSION" \
+            --notes-file notes.md \
+            --target "$GITHUB_SHA"

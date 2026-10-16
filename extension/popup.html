@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <title>Paragrafy</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <div class="heading">
+      <h1 id="page-title">Paragrafy</h1>
+      <div id="meta" class="meta"></div>
+    </div>
+    <button id="options" class="icon-button" title="Nastavení" aria-label="Nastavení">⚙</button>
+  </header>
+  <main>
+    <div id="status" class="status" hidden></div>
+    <div id="notice" class="notice" hidden></div>
+    <div id="error" class="error" role="alert" hidden></div>
+    <div id="empty" class="empty" hidden>
+      <p><strong>Na stránce jsem nenašel žádné citace českých předpisů.</strong></p>
+      <p>Hledám zápisy jako „§ 2079 odst. 2 zákona č. 89/2012 Sb.“, „§ 52 písm. c) zákoníku práce“,
+        „§ 68 s. ř. s.“ nebo „čl. 36 Listiny“.</p>
+    </div>
+    <ul id="laws" class="laws" aria-live="polite"></ul>
+  </main>
+  <footer>
+    <span id="hint" class="hint">Ctrl + klik otevře odkaz na pozadí</span>
+    <button id="copy" disabled title="Zkopírovat seznam odkazů">Kopírovat</button>
+    <button id="rescan" disabled title="Znovu projít stránku">Znovu</button>
+  </footer>
+  <script type="module" src="dist/popup.js"></script>
+</body>
+</html>

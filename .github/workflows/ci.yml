@@ -1,0 +1,35 @@
+# Kontrola každého pull requestu a pushe do master: lint, formátování, testy
+# a ověření, že sestavený extension/dist/ odpovídá zdrojům v src/.
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm test
+      - run: npm run build
+
+      - name: Sestavený extension/dist/ je aktuální
+        run: |
+          if ! git diff --exit-code -- extension/dist; then
+            echo "::error::extension/dist/ neodpovídá zdrojům – spusťte npm run build a změny commitněte."
+            exit 1
+          fi

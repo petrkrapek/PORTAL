@@ -1,0 +1,40 @@
+{
+  "manifest_version": 3,
+  "name": "Paragrafy – odkazy na zákony",
+  "short_name": "Paragrafy",
+  "version": "0.1.0",
+  "description": "Najde na stránce citace českých zákonů a paragrafů a nabídne odkazy přímo do e-Sbírky.",
+  "action": {
+    "default_title": "Paragrafy – odkazy na zákony na této stránce",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "options_page": "options.html",
+  "background": {
+    "service_worker": "dist/background.js",
+    "type": "module"
+  },
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://api.e-sbirka.gov.cz/*",
+    "https://e-sbirka.gov.cz/sbr-cache/*"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; connect-src https://api.e-sbirka.gov.cz https://e-sbirka.gov.cz"
+  }
+}

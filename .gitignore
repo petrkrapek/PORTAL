@@ -1,0 +1,3 @@
+node_modules/
+# Balíčky ZIP se vytvářejí lokálně (npm run zip) nebo v GitHub Release – necommitují se.
+release/

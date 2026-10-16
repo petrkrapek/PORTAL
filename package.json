@@ -1,0 +1,29 @@
+{
+  "name": "paragrafy",
+  "private": true,
+  "description": "Rozšíření do Chromu, které na stránce najde citace českých předpisů a nabídne odkazy do e-Sbírky.",
+  "license": "Apache-2.0",
+  "author": "Petr Křápek",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "esbuild src/popup.js src/options.js src/background.js --bundle --format=esm --target=chrome120 --minify --outdir=extension/dist",
+    "watch": "npm run build -- --watch",
+    "zip": "npm run build && node scripts/zip.mjs",
+    "icons": "node scripts/icons.mjs",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "node --test",
+    "check": "npm run lint && npm run format:check && npm test && npm run build"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "esbuild": "^0.28.2",
+    "eslint": "^10.12.0",
+    "globals": "^17.13.0",
+    "prettier": "^3.9.10"
+  }
+}

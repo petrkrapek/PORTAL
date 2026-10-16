@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Paragrafy – nastavení</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <header class="page-header">
+    <img src="icons/icon48.png" alt="" width="40" height="40">
+    <div>
+      <h1>Paragrafy</h1>
+      <p class="subtitle">Odkazy na zákony · nastavení<span id="version"></span></p>
+    </div>
+    <a class="header-link" href="https://e-sbirka.gov.cz/" target="_blank" rel="noopener">e-Sbírka</a>
+  </header>
+
+  <form id="form" novalidate>
+    <!-- 1. Ověření v e-Sbírce -->
+    <section class="card" aria-labelledby="sec-source">
+      <div class="card-head">
+        <div>
+          <h2 id="sec-source">Ověření v e-Sbírce</h2>
+          <p class="card-desc">Nalezené předpisy se ověří přes REST API e-Sbírky: úplný název, zrušené předpisy
+            a názvy paragrafů. Odkazy fungují i bez ověření.</p>
+        </div>
+        <span class="badge" id="badge-source"></span>
+      </div>
+
+      <div class="field">
+        <span class="label" id="source-label">Zdroj dat</span>
+        <div class="segmented" id="source-choices" role="radiogroup" aria-labelledby="source-label"></div>
+      </div>
+
+      <fieldset id="source-api" class="source">
+        <div class="field">
+          <label for="apiKey">API klíč e-Sbírky</label>
+          <div class="secret">
+            <input id="apiKey" name="apiKey" type="password" autocomplete="off" spellcheck="false" placeholder="klíč přidělený MV ČR">
+            <button type="button" class="toggle" data-for="apiKey">Zobrazit</button>
+          </div>
+          <p class="hint">
+            Posílá se jen na <code>api.e-sbirka.gov.cz</code> v hlavičce <code>esel-api-access-key</code>.
+          </p>
+        </div>
+        <details class="howto">
+          <summary>Jak získat klíč</summary>
+          <ol>
+            <li>
+              Na stránce <a href="https://e-sbirka.gov.cz/restful-api" target="_blank" rel="noopener">Použití REST API</a>
+              stáhněte registrační formulář.
+            </li>
+            <li>Vyplněný formulář pošlete datovou schránkou Ministerstvu vnitra ke schválení.</li>
+            <li>Přidělený klíč (platí pro e-Sbírku i e-Legislativu) vložte sem a klikněte na <strong>Vyzkoušet</strong>.</li>
+          </ol>
+        </details>
+      </fieldset>
+
+      <fieldset id="source-cache" class="source">
+        <p class="warning">
+          Veřejná cache <code>e-sbirka.gov.cz/sbr-cache</code> je rozhraní, ze kterého čte data samotný portál.
+          Vrací stejná data jako API, ale klíč nepotřebuje – ministerstvo ho ovšem oficiálně nepodporuje a může
+          se kdykoli změnit. Vhodné na vyzkoušení, než dostanete vlastní klíč.
+        </p>
+      </fieldset>
+
+      <div class="field" id="provisions-field">
+        <label class="check">
+          <input type="checkbox" id="checkProvisions" name="checkProvisions">
+          <span>Dohledávat názvy paragrafů
+            <span class="sub">U každého paragrafu se zeptá e-Sbírky na jeho název a upozorní, když v aktuálním
+              znění není. Nejvýš 60 dotazů na stránku.</span>
+          </span>
+        </label>
+      </div>
+
+      <div class="test-row" id="test-row">
+        <button type="button" id="test">Vyzkoušet</button>
+        <span id="test-result" role="status" aria-live="polite"></span>
+      </div>
+    </section>
+
+    <!-- 2. Odkazy -->
+    <section class="card" aria-labelledby="sec-links">
+      <div class="card-head">
+        <div>
+          <h2 id="sec-links">Odkazy</h2>
+          <p class="card-desc">Kam se otevře zákon nebo paragraf po kliknutí v okně rozšíření.</p>
+        </div>
+      </div>
+      <div class="field">
+        <span class="label" id="openIn-label">Otevírat v</span>
+        <div class="segmented" id="openIn-choices" role="radiogroup" aria-labelledby="openIn-label"></div>
+        <p class="hint">
+          Bez ohledu na volbu: <strong>Ctrl + klik</strong> (na Macu ⌘ + klik) nebo kolečko myši otevře odkaz
+          na pozadí a okno rozšíření zůstane otevřené, <strong>Shift + klik</strong> otevře nové okno.
+        </p>
+      </div>
+    </section>
+
+    <!-- 3. Co rozšíření hledá -->
+    <section class="card" aria-labelledby="sec-help">
+      <div class="card-head">
+        <div>
+          <h2 id="sec-help">Co rozšíření na stránce hledá</h2>
+          <p class="card-desc">Citace českých předpisů a jejich ustanovení, například:</p>
+        </div>
+      </div>
+      <ul class="examples">
+        <li><code>§ 2079 odst. 2 zákona č. 89/2012 Sb.</code> – číslem předpisu (i Sbírka mezinárodních smluv)</li>
+        <li><code>§ 52 písm. c) zákoníku práce</code>, <code>čl. 36 Listiny</code> – názvem známého předpisu</li>
+        <li><code>§ 68 odst. 3 s. ř. s.</code>, <code>§ 2079 OZ</code> – ustálenou zkratkou</li>
+        <li><code>§ 5 až 8 téhož zákona</code>, <code>§ 5 a 6</code> – výčty a rozsahy paragrafů</li>
+      </ul>
+      <p class="hint">
+        Paragraf bez uvedeného předpisu se přiřadí k zákonu zmíněnému těsně před ním. Ustanovení předpisů EU
+        (např. <code>čl. 6 GDPR</code>) se přeskakují.
+      </p>
+    </section>
+
+    <p class="privacy">
+      Text stránky se nikam neodesílá – citace se hledají přímo v prohlížeči. Do e-Sbírky odchází jen čísla
+      nalezených předpisů a paragrafů. Nastavení i klíč jsou uložené jen v tomto prohlížeči.
+    </p>
+
+    <div class="savebar">
+      <span id="status" role="status" aria-live="polite"></span>
+      <button type="submit" class="primary">Uložit</button>
+    </div>
+  </form>
+  <script type="module" src="dist/options.js"></script>
+</body>
+</html>

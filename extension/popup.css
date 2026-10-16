@@ -1,0 +1,165 @@
+/* Chrome omezuje výšku popupu na 600 px. Okno se do ní vždy vejde – roluje jen seznam. */
+body {
+  width: 420px;
+  max-height: 600px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+header, footer { flex: none; }
+header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+header .heading { flex: 1; min-width: 0; }
+header h1 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.icon-button {
+  border: none;
+  background: none;
+  font-size: 16px;
+  padding: 2px 4px;
+  color: var(--muted);
+}
+header .meta {
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+header .meta:empty { display: none; }
+main {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: 480px;
+  overflow-y: auto;
+  padding: 4px 14px 10px;
+}
+.status {
+  color: var(--muted);
+  padding: 12px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.status::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.notice .action, .error .action {
+  border: none;
+  background: none;
+  padding: 0;
+  margin-left: 4px;
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+}
+.empty p { margin: 10px 0; }
+.empty p + p { color: var(--muted); font-size: 13px; }
+
+/* Seznam předpisů a jejich ustanovení */
+.laws { list-style: none; margin: 0; padding: 0; }
+.law { padding: 6px 0; border-bottom: 1px solid var(--border); }
+.law:last-child { border-bottom: none; }
+.law a, .provision a {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: inherit;
+  text-decoration: none;
+  border-radius: 6px;
+  margin: 0 -6px;
+  padding: 4px 6px;
+}
+.law a:hover, .provision a:hover, .law a:focus-visible, .provision a:focus-visible {
+  background: var(--surface);
+  outline: none;
+}
+.law a:hover .open, .provision a:hover .open { color: var(--accent); }
+.dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  margin-top: 7px;
+  border-radius: 50%;
+  background: var(--border);
+}
+.dot[data-tone="pending"] { animation: pulse 1s ease-in-out infinite alternate; }
+.dot[data-tone="ok"] { background: var(--ok); }
+.dot[data-tone="warn"] { background: var(--warn); }
+.dot[data-tone="bad"] { background: var(--bad); }
+@keyframes pulse { to { opacity: 0.3; } }
+.law-text { flex: 1; min-width: 0; }
+.law-code { font-weight: 600; }
+.law-name {
+  color: var(--muted);
+  font-size: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.law-name:empty { display: none; }
+.chip {
+  flex: none;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 18px;
+  margin-top: 1px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  white-space: nowrap;
+}
+.chip:empty { display: none; }
+.chip[data-tone="bad"] { color: var(--bad); }
+.chip[data-tone="warn"] { color: var(--warn); }
+.open { flex: none; color: var(--muted); }
+
+.provisions { list-style: none; margin: 0 0 2px; padding: 0 0 0 16px; }
+.provision a { align-items: baseline; padding-top: 2px; padding-bottom: 2px; }
+.provision-label { flex: none; color: var(--accent); font-weight: 500; white-space: nowrap; }
+.provision-name {
+  flex: 1;
+  min-width: 0;
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.provision[data-missing] .provision-label { color: var(--muted); text-decoration: line-through; }
+
+footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 8px 14px;
+  border-top: 1px solid var(--border);
+}
+footer .hint { margin-right: auto; color: var(--muted); font-size: 11px; }
+.unassigned {
+  list-style: none;
+  padding: 8px 0 2px;
+  color: var(--muted);
+  font-size: 12px;
+}
